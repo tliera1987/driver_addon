@@ -17,3 +17,4 @@ for obj in bpy.data.objects:
             for strip in track.strips:
                 if not any(fcurve.data_path.startswith('key_blocks') for fcurve in strip.action.fcurves):
                     track.strips.remove(strip)
+
