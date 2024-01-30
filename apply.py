@@ -27,7 +27,9 @@ else:
 frame = scene.frame_start
 while frame <= end_frame:
     scene.frame_set(frame)
+    print("현재 프레임:", frame)  # 현재 프레임 출력
     if object.type == 'MESH' and object.data.shape_keys and object.data.shape_keys.animation_data:
         for fcurve in object.data.shape_keys.animation_data.drivers:
+            print("data_path:", fcurve.data_path, "index:", -1)  # keyframe_insert에 사용되는 값 출력
             object.data.shape_keys.keyframe_insert(data_path=fcurve.data_path, index=-1)
     frame += 1
