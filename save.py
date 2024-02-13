@@ -29,5 +29,5 @@ def save_driver_data(obj, filepath):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(drivers_data, f, ensure_ascii=False, indent=4)
 # 사용 예시:
-save_driver_data(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/rnd/PoC/blender_drive/json/drivers_04.json')
+save_driver_data(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/test_01.json')
 
