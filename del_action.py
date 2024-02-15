@@ -18,3 +18,6 @@ for obj in bpy.data.objects:
                 if not any(fcurve.data_path.startswith('key_blocks') for fcurve in strip.action.fcurves):
                     track.strips.remove(strip)
 
+# 아웃라이너의 블렌드 파일 뷰에서 모든 액션 삭제
+for action in bpy.data.actions:
+   bpy.data.actions.remove(action, do_unlink=True)

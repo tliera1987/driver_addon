@@ -32,3 +32,4 @@ if obj.data.shape_keys:
         print("쉐이프 키에 애니메이션 액션이 없습니다.")
 else:
     print("선택한 오브젝트에 쉐이프 키 데이터가 없습니다.")
+
