@@ -30,6 +30,11 @@ if obj.data.shape_keys:
             print("Dope Sheet 에디터 영역을 찾을 수 없습니다.")
     else:
         print("쉐이프 키에 애니메이션 액션이 없습니다.")
+
+    # 쉐이프 키 값을 0으로 초기화
+    for key_block in key_blocks:
+        key_block.value = 0
+    print("모든 쉐이프 키 값을 0으로 초기화했습니다.")
+
 else:
     print("선택한 오브젝트에 쉐이프 키 데이터가 없습니다.")
-

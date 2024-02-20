@@ -1,5 +1,7 @@
 import bpy
 
+#기존 드라이버 제거
+
 def delete_shape_key_drivers(obj):
     # 쉐이프 키가 있는지 확인합니다.
     if not (obj.data.shape_keys and obj.data.shape_keys.animation_data):

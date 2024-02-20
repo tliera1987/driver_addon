@@ -1,7 +1,6 @@
 import bpy
 
-
-
+# 컨트롤러 애니메이션을 쉐입키 애니메이션으로 변환하는 기능
 
 context = bpy.context
 scene = context.scene

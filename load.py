@@ -1,6 +1,7 @@
 import bpy
 import json
 
+#json형태로 저장된 드라이버 셋팅을 불러오기
 def load_drivers(obj, filepath):
     with open(filepath, 'r') as f:
         drivers_data = json.load(f)
@@ -30,4 +31,4 @@ def load_drivers(obj, filepath):
 
 
 # 사용 예시:
-load_drivers(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/rnd/PoC/blender_drive/json/drivers_04.json')
+load_drivers(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_driver_00.json')

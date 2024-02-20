@@ -1,6 +1,7 @@
 import bpy
 import json
 
+#드라이브 셋팅을 저장
 def save_driver_data(obj, filepath):
     drivers_data = []
 
@@ -29,5 +30,5 @@ def save_driver_data(obj, filepath):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(drivers_data, f, ensure_ascii=False, indent=4)
 # 사용 예시:
-save_driver_data(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/test_01.json')
+save_driver_data(bpy.context.active_object, '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_driver_00.json')
 

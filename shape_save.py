@@ -2,6 +2,8 @@ import bpy
 import json
 import os
 
+# 쉐입키 애니메이션을 json 형식으로 저장합니다.(주의 : 내부 에드온 전용)
+
 # 현재 활성화된 오브젝트를 가져옵니다.
 obj = bpy.context.active_object
 

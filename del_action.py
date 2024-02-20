@@ -1,5 +1,7 @@
 import bpy
 
+#블렌더 내의 모든 액션목록을 제거
+
 # 씬 내의 모든 오브젝트를 반복
 for obj in bpy.data.objects:
     # 오브젝트가 애니메이션 데이터를 가지고 있는지 확인
