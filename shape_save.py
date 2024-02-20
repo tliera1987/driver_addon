@@ -31,8 +31,8 @@ if obj and obj.data.shape_keys and obj.data.shape_keys.animation_data and obj.da
         # 각 쉐입키에 대해 현재 프레임의 값을 저장합니다.
         for shape_key in key_blocks:
             if shape_key.name != "Basis":
-                # 여기에서 값을 반올림합니다. 소수점 세 자리까지만 저장합니다.
-                value_rounded = round(shape_key.value, 3)
+                # 여기에서 값을 반올림합니다. 소수점 여섯 자리까지만 저장합니다.
+                value_rounded = round(shape_key.value, 6)
                 shape_keys_data[shape_key.name].append(value_rounded)
 
 # JSON으로 변환합니다.
