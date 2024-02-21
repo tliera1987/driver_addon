@@ -1,15 +1,29 @@
 import bpy
 import json
 
-#쉐이프 키 애니메이션을 액션 키 애니메이션으로 변환
+def find_closest_xy_combination(a, multiplier=30.04, x_min=-0.0333, x_max=0.0333, y_min=-0.0333, y_max=0.0333):
+    best_diff = float('inf')
+    best_x, best_y = 0, 0
+
+    # 주어진 범위 내에서 x와 y의 조합 탐색
+    for x in [x_min + i * (x_max - x_min) / 100.0 for i in range(101)]:
+        y = (a / multiplier) - x
+        # y가 주어진 범위 내에 있는지 확인하고, 범위를 벗어나면 스킵
+        if y < y_min or y > y_max:
+            continue
+        # x - y의 절대값이 현재까지의 최소값보다 작은지 확인
+        current_diff = abs(x - y)
+        if current_diff < best_diff:
+            best_diff = current_diff
+            best_x, best_y = x, y
+
+    # x - y가 0에 가장 가까운 조합 반환
+    return best_x, best_y
 
 # 파일 경로
-# a = 드라이버 셋팅 저장 파일 
-# b = 쉐입키 애니메이션 파일
-a_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_driver_00.json'  # 예시 경로, 실제 경로로 변경 필요
-b_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_facecontroller_script_04_shape_keys.json'  # 예시 경로, 실제 경로로 변경 필요
+a_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_driver_00.json'  
+b_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_facecontroller_script_04_01_shape_keys.json'  
 
-# 파일 로드
 with open(a_file_path, 'r') as file:
     a_data = json.load(file)
 
@@ -17,12 +31,11 @@ with open(b_file_path, 'r') as file:
     b_data = json.load(file)
 
 # 암쳐 객체 설정
-armature_name = a_data[0]['variables'][0]['target_id_name']  # 첫 번째 드라이버 설정에서 암쳐 이름 추정
+armature_name = a_data[0]['variables'][0]['target_id_name']
 armature = bpy.data.objects.get(armature_name)
 if not armature or armature.type != 'ARMATURE':
     print(f"암쳐 {armature_name}를 찾을 수 없습니다.")
 else:
-    # 애니메이션 데이터 생성 및 액션 설정
     if not armature.animation_data:
         armature.animation_data_create()
     action = bpy.data.actions.new(name=f"{armature_name}_Action")
@@ -35,11 +48,9 @@ else:
             print(f"{shapekey_name}에 해당하는 쉐입키 데이터가 b_file 내에 없습니다.")
             continue
         
-        # b_data에서 해당 쉐입키의 애니메이션 값을 가져옴
         animation_values = b_data[shapekey_name]
-        for frame_number, k_var in enumerate(animation_values, start=1):
-            # 역산으로 var과 var_001 계산
-            
+        for frame_number, a in enumerate(animation_values, start=1):
+            var, var_001 = find_closest_xy_combination(a)
 
             # 본 위치 설정 및 키프레임 삽입
             for var_data in driver['variables']:
@@ -49,12 +60,12 @@ else:
                     print(f"본 {bone_name}를 찾을 수 없습니다.")
                     continue
                 
-                # 위치 설정 및 키프레임 삽입
+                # 설정된 위치에 따라 본 위치 업데이트 및 키프레임 삽입
                 if "location[0]" in var_data['data_path']:
-                    bone.location.x = var  # X축에 var 값 적용
+                    bone.location.x = var
                     bone.keyframe_insert(data_path="location", index=0, frame=frame_number)
                 elif "location[2]" in var_data['data_path']:
-                    bone.location.z = var_001  # Z축에 var_001 값 적용
+                    bone.location.z = var_001
                     bone.keyframe_insert(data_path="location", index=2, frame=frame_number)
 
 print("스크립트 실행 완료")
