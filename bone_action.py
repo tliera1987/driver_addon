@@ -9,8 +9,6 @@ import json
 a_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_driver_00.json'  # 예시 경로, 실제 경로로 변경 필요
 b_file_path = '/Users/hun/GoodGangLabs Dropbox/Individuals/Jeonghun/project/kikiz/3d/blender/json/kz_avatar_kikiz_facecontroller_script_04_shape_keys.json'  # 예시 경로, 실제 경로로 변경 필요
 
-
-
 # 파일 로드
 with open(a_file_path, 'r') as file:
     a_data = json.load(file)
@@ -41,7 +39,7 @@ else:
         animation_values = b_data[shapekey_name]
         for frame_number, k_var in enumerate(animation_values, start=1):
             # 역산으로 var과 var_001 계산
-            var = var_001 = k_var / (30.04 * 2)
+            
 
             # 본 위치 설정 및 키프레임 삽입
             for var_data in driver['variables']:
