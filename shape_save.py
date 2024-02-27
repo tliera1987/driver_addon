@@ -1,50 +1,80 @@
+bl_info = {
+    "name": "Export Shape Key Animation",
+    "blender": (2, 80, 0),
+    "category": "Object",
+    "description": "Export shape key animation data to JSON file",
+    "author": "Your Name",
+    "version": (1, 0),
+    "location": "View3D > Sidebar > Export Tools",
+}
+
 import bpy
 import json
 import os
 
-# 쉐입키 애니메이션을 json 형식으로 저장합니다.(주의 : 내부 에드온 전용)
-
-# 현재 활성화된 오브젝트를 가져옵니다.
-obj = bpy.context.active_object
-
-# 결과를 저장할 딕셔너리입니다.
-shape_keys_data = {}
-
-# 오브젝트에 쉐입키와 애니메이션 데이터가 있는지 확인합니다.
-if obj and obj.data.shape_keys and obj.data.shape_keys.animation_data and obj.data.shape_keys.animation_data.action:
-    key_blocks = obj.data.shape_keys.key_blocks
-    action = obj.data.shape_keys.animation_data.action
-
-    # 각 쉐입키에 대해 프레임별 값을 저장할 딕셔너리를 초기화합니다.
-    for shape_key in key_blocks:
-        if shape_key.name != "Basis":  # "Basis" 쉐입키는 제외합니다.
-            shape_keys_data[shape_key.name] = []
-
-    # 애니메이션 액션의 시작과 끝 프레임을 계산합니다.
-    frame_start = int(action.frame_range[0])
-    frame_end = int(action.frame_range[1])
-
-    # 각 프레임에 대해 반복합니다.
-    for frame in range(frame_start, frame_end + 1):
-        bpy.context.scene.frame_set(frame)
-
-        # 각 쉐입키에 대해 현재 프레임의 값을 저장합니다.
+def export_shape_key_animation(obj, filepath):
+    shape_keys_data = {}
+    if obj and obj.data.shape_keys and obj.data.shape_keys.animation_data and obj.data.shape_keys.animation_data.action:
+        key_blocks = obj.data.shape_keys.key_blocks
+        action = obj.data.shape_keys.animation_data.action
         for shape_key in key_blocks:
             if shape_key.name != "Basis":
-                # 여기에서 값을 반올림합니다. 소수점 여섯 자리까지만 저장합니다.
-                value_rounded = round(shape_key.value, 6)
-                shape_keys_data[shape_key.name].append(value_rounded)
+                shape_keys_data[shape_key.name] = []
+        frame_start = int(action.frame_range[0])
+        frame_end = int(action.frame_range[1])
+        for frame in range(frame_start, frame_end + 1):
+            bpy.context.scene.frame_set(frame)
+            for shape_key in key_blocks:
+                if shape_key.name != "Basis":
+                    value_rounded = round(shape_key.value, 6)
+                    shape_keys_data[shape_key.name].append(value_rounded)
+    json_data = json.dumps(shape_keys_data, indent=4)
 
-# JSON으로 변환합니다.
-json_data = json.dumps(shape_keys_data, indent=4)
+    with open(filepath, 'w') as file:
+        file.write(json_data)
+    print(f"Data exported to {filepath}")
 
-# 현재 블렌더 파일 경로와 파일 이름을 가져옵니다.
-blend_file_path = bpy.path.abspath('//')
-blend_file_name = bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend', '')
-json_file_path = os.path.join(blend_file_path, f"{blend_file_name}_shape_keys.json")
+class ExportShapeKeyAnimationOperator(bpy.types.Operator):
+    """Export Shape Key Animation"""
+    bl_idname = "object.export_shape_key_animation"
+    bl_label = "Export Shape Key Animation"
+    filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+    filename_ext = ".json"  # 파일 확장자 명시
 
-# 파일로 저장합니다.
-with open(json_file_path, 'w') as file:
-    file.write(json_data)
+    filter_glob: bpy.props.StringProperty(
+        default="*.json",  # 파일 브라우저에 표시할 파일 필터 설정
+        options={'HIDDEN'}
+    ) # type: ignore
 
-print(f"Data exported to {json_file_path}")
+    def execute(self, context):
+        export_shape_key_animation(context.active_object, self.filepath)
+        self.report({'INFO'}, "Shape Key Animation Data Exported")
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+class ExportShapeKeyAnimationPanel(bpy.types.Panel):
+    """Creates a Panel in the Object properties window"""
+    bl_label = "Export Shape Key Animation"
+    bl_idname = "OBJECT_PT_export_shape_key_animation"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Export Tools'
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="뒤에 확장자를 지워주세요")
+        layout.operator(ExportShapeKeyAnimationOperator.bl_idname)
+
+def register():
+    bpy.utils.register_class(ExportShapeKeyAnimationOperator)
+    bpy.utils.register_class(ExportShapeKeyAnimationPanel)
+
+def unregister():
+    bpy.utils.unregister_class(ExportShapeKeyAnimationOperator)
+    bpy.utils.unregister_class(ExportShapeKeyAnimationPanel)
+
+if __name__ == "__main__":
+    register()
