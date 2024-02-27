@@ -11,34 +11,8 @@ bl_info = {
 import bpy
 import json
 
-def apply_transformations(driver_settings, shape_key_animations, armature_name):
-    armature = bpy.data.objects.get(armature_name)
-    if not armature:
-        print(f"Armature '{armature_name}' not found.")
-        return
-    bpy.context.view_layer.objects.active = armature
-    bpy.ops.object.mode_set(mode='POSE')
+from .bone_action import apply_transformations
 
-    for setting in driver_settings:
-        shape_key_name = setting["data_path"].split('"')[1]
-        expression = setting["expression"]
-        multiplier = float(expression.split('*')[1].strip())
-        if expression.strip().startswith('-'):
-            multiplier = -multiplier
-
-        for variable in setting["variables"]:
-            bone_name = variable["data_path"].split('"')[1]
-            axis_index = int(variable["data_path"].split('[')[-1][0])
-            bone = armature.pose.bones.get(bone_name)
-            if not bone:
-                print(f"Bone '{bone_name}' not found.")
-                continue
-
-            if shape_key_name in shape_key_animations:
-                for frame, shape_key_value in enumerate(shape_key_animations[shape_key_name], start=1):
-                    calculated_value = shape_key_value / multiplier
-                    bone.location[axis_index] = calculated_value
-                    bone.keyframe_insert(data_path='location', index=axis_index, frame=frame)
 
 class ApplyTransformationsOperator(bpy.types.Operator):
     """Apply Custom Transformations"""
@@ -65,7 +39,7 @@ class OpenDriverSettingsFile(bpy.types.Operator):
     """Open a file browser to select the driver settings JSON file"""
     bl_idname = "object.open_driver_settings_file"
     bl_label = "Select Driver Settings File"
-    filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+    filepath: bpy.props.StringProperty(subtype="FILE_PATH") # type: ignore
 
     def execute(self, context):
         context.scene.driver_settings_path = self.filepath
@@ -79,7 +53,7 @@ class OpenShapeKeyAnimationsFile(bpy.types.Operator):
     """Open a file browser to select the shape key animations JSON file"""
     bl_idname = "object.open_shape_key_animations_file"
     bl_label = "Select Shape Key Animations File"
-    filepath: bpy.props.StringProperty(subtype="FILE_PATH")
+    filepath: bpy.props.StringProperty(subtype="FILE_PATH") # type: ignore
 
     def execute(self, context):
         context.scene.shape_key_animations_path = self.filepath
