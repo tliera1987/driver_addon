@@ -1,5 +1,5 @@
 bl_info = {
-    "name": "Convert to Bone",
+    "name": "Driver Addon",
     "blender": (2, 80, 0),
     "category": "Animation",
     "description": "Convert controller animation to shape key animation",
