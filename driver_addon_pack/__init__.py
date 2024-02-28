@@ -1,5 +1,5 @@
 bl_info = {
-    "name": "Convert Controller to Shape Key Animation",
+    "name": "Convert to Bone",
     "blender": (2, 80, 0),
     "category": "Animation",
     "description": "Convert controller animation to shape key animation",
