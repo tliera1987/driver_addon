@@ -3,7 +3,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "category": "Animation",
     "description": "Convert controller animation to shape key animation",
-    "author": "Your Name",
+    "author": "jh kim",
     "version": (1, 0),
     "location": "View3D > Sidebar > Driver_Addon",
 }
